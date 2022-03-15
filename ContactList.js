@@ -28,6 +28,7 @@ $(document).ready(function() {
     // 1. The "Add" button (for adding a new entry)...
     $("#add").click(function() {
         currentEntry = "";
+        document.getElementById("addContactHeader").innerHTML = "New Contact"
         var e = new Entry();    // An empty one.
         displayEntry(e);
     });
@@ -42,9 +43,17 @@ $(document).ready(function() {
         }
     });
 
+    $("#edit").click(function(){
+        document.getElementById("addContactHeader").innerHTML = "Edit Contact"
+        currentEntry = $(this).text();                  // The text in the <a> element, which is an Entry's displayName()
+        var e = getEntryFromDisplayName(currentEntry);
+        displayEntry(e);
+    })
+
     // 3. The "Update" button, for updating an entry's details...
     $("#update").click(function() {
         if(currentEntry === ""){
+            document.getElementById("addContactHeader").innerHTML = "New Contact"
             addNewEntry();
         } else {
             updateEntry();
@@ -58,10 +67,10 @@ $(document).ready(function() {
 
 // This selector applies to all <a> elements inside the <ul> with the id "list".
 // $(this) is a jQuery object referencing the actual <a> element that was clicked on.
-$(document).on('click', "#list a", function() {
+$(document).on('click', "#list li a", function() {
     currentEntry = $(this).text();                  // The text in the <a> element, which is an Entry's displayName()
     var e = getEntryFromDisplayName(currentEntry);  // This get a reference to the actual Entry
-    displayEntry(e);                                // This puts it into the form on the 'entry' page
+    displayEntryDetails(e);                                // This puts it into the form on the 'entry' page
 });
 
 // This gets call when the app is first loaded...
@@ -92,10 +101,7 @@ var Entry = function(name, mobile, email, gender) {
  * @returns {string}
  */
 Entry.prototype.displayName = function() {
-    var firstnames, surname;
-    firstnames = this.name.substring(0, this.name.lastIndexOf(" ")).trim();
-    surname = this.name.substring(this.name.lastIndexOf(" ") + 1);
-    return surname + ", " + firstnames;
+    return this.name;
 }
 
 /**
@@ -198,11 +204,11 @@ function entryList(){
                         <a href="#contactDetails" >
                             <img src="contact.jpg" style="background-color:transparent; border-radius: 50%; padding-left: 10px; padding-top: 3px; height: 90%;" >
                             <h1>
-                                
+                                ${entries[index].displayName()}
                             </h1>
-                            <p> </p>
+                            <p> ${entries[index].email} </p>
                         </a>
-                        <a href="tel:01100792555" class="ui-icon-phone" style="background-color: #43d1af; width: 75px; border-top-left-radius:25%; border-bottom-left-radius: 25%;">
+                        <a href="tel:${entries[index].mobile}" class="ui-icon-phone" style="background-color: #43d1af; width: 75px; border-top-left-radius:25%; border-bottom-left-radius: 25%;">
                         </a>
                     </li>
 		`
@@ -246,7 +252,6 @@ function displayEntry(e){
     $("#mobile").val(e.mobile);
     $("#mobilebutton").attr("href", "tel:"+ e.mobile);
     $("#email").val(e.email);
-    $("#mailbutton").attr("href", "mailto:"+ e.email);
     // This is a bit of a beast, to do with the way the HTML <input> date type
     // expects dates to be formatted.  We want the date only (yyyy-mm-dd) and
     // that gender is a full ISO date.  .toISOString() returns yyyy-mm-mm hh:mm or
@@ -254,6 +259,11 @@ function displayEntry(e){
     // from the ISO date string...
     $("#flip2").val(e.gender);
     $("#name").text(e.name);
+}
+
+function displayEntryDetails(e)
+{
+    $("#contactName").val(e.name);
 }
 
 /**

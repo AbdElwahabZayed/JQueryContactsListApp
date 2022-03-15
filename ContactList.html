@@ -23,17 +23,7 @@
                 <ul id="list" data-role="listview" data-filter="true" data-autodividers="true" data-filter-placeholder="Search contacts">
                     <!-- Starts up as an empty list.  Items are added from
                          localStorage in $(document).ready() -->
-                    <li>
-                        <a href="#contactDetails" >
-                            <img src="contact.jpg" style="background-color:transparent; border-radius: 50%; padding-left: 10px; padding-top: 3px; height: 90%;" >
-                            <h1>
-                                Mohammad Amr
-                            </h1>
-                            <p> Trainee @ITI Native Mobile Application </p>
-                        </a>
-                        <a href="tel:01100792555" class="ui-icon-phone" style="background-color: #43d1af; width: 75px; border-top-left-radius:25%; border-bottom-left-radius: 25%;">
-                        </a>
-                    </li>
+
                 </ul>
             </div>
         </section>
@@ -42,7 +32,7 @@
         <section id="addContact" data-role="page">
             <div data-role="header" style="background-color: #43d1af; color:white; font-weight: 100">
                 <a data-rel="back" class="ui-btn ui-btn-left ui-btn-icon-left ui-icon-carat-l" style="height: 15px; background-color:white; border-radius:15px; color:white; font-weight: normal"></a>
-                <h1>
+                <h1 id="addContactHeader">
                     New Contact
                 </h1>
             </div>
@@ -58,7 +48,7 @@
                         <option value="on">Female</option>
                     </select>
                 </li>
-                <a href="#" data-role="button" data-icon ="check" data-iconpos="left" data-inline="true" style="border-radius: 15px; color:White; background-color: #43d1af; font-weight: 100">Save</a>
+                <a href="#home" data-role="button" data-icon ="check" data-iconpos="left" data-inline="true" id="update" style="border-radius: 15px; color:White; background-color: #43d1af; font-weight: 100">Save</a>
                 <a href="#" data-role="button" data-rel="back" data-icon ="delete" data-iconpos="left" data-inline="true" style="border-radius: 15px; color:White; background-color: #43d1af; font-weight: 100">Cancel</a>
             </div>
         </section>
@@ -78,7 +68,7 @@
                 <br>
                 <div style="display:block; margin-right: auto; margin-left:auto;">
                     <a href="#popupDialog" data-role="button" data-rel="popup"  data-transition="pop" data-position-to="window" data-icon="delete" data-iconpos="notext" class="ui-shadow  ui-icon-delete" style="background-color: #43d1af">delete</a>
-                    <a href="#" data-role="button" data-icon ="edit" data-iconpos="notext" data-inline="true" data-theme="c" style="background-color: #43d1af" id="edit">Edit</a>
+                    <a href="#addContact" data-role="button" data-icon ="edit" data-iconpos="notext" data-inline="true" data-theme="c" style="background-color: #43d1af" id="edit">Edit</a>
                     <a href="#" data-role="button" data-icon ="phone" data-iconpos="notext" data-inline="true" data-theme="c" style="background-color: #43d1af" id="telephone">Call</a>
                 </div>
 
@@ -99,7 +89,7 @@
 
             </article>
         </section>
-
+        <script src="ContactList.js"></script>
     </body>
 
 </html>
