@@ -28,10 +28,13 @@ $(document).ready(function() {
     // 1. The "Add" button (for adding a new entry)...
     $("#add").click(function() {
         currentEntry = "";
-        document.getElementById("addContactHeader").innerHTML = "New Contact"
         var e = new Entry();    // An empty one.
         displayEntry(e);
-    });
+		$("#addContactHeader").text("New Contact");
+		$("#update").text("save");
+    });    
+	
+
 
     // 2. The "Del" button, for deleting an entry...
     $("#del").click(function() {
@@ -44,8 +47,9 @@ $(document).ready(function() {
     });
 
     $("#edit").click(function(){
-        document.getElementById("addContactHeader").innerHTML = "Edit Contact"
-        currentEntry = $(this).text();                  // The text in the <a> element, which is an Entry's displayName()
+		$("#addContactHeader").text("Edit Contact");
+		$("#update").text("update");
+        //	currentEntry = $(this).text();                  // The text in the <a> element, which is an Entry's displayName()
         var e = getEntryFromDisplayName(currentEntry);
         displayEntry(e);
     })
@@ -53,7 +57,6 @@ $(document).ready(function() {
     // 3. The "Update" button, for updating an entry's details...
     $("#update").click(function() {
         if(currentEntry === ""){
-            document.getElementById("addContactHeader").innerHTML = "New Contact"
             addNewEntry();
         } else {
             updateEntry();
@@ -67,8 +70,9 @@ $(document).ready(function() {
 
 // This selector applies to all <a> elements inside the <ul> with the id "list".
 // $(this) is a jQuery object referencing the actual <a> element that was clicked on.
-$(document).on('click', "#list li a", function() {
-    currentEntry = $(this).text();                  // The text in the <a> element, which is an Entry's displayName()
+$(document).on('click', "#list h1", function() {
+
+    currentEntry =  $(this).text();                // The text in the <a> element, which is an Entry's displayName()
     var e = getEntryFromDisplayName(currentEntry);  // This get a reference to the actual Entry
     displayEntryDetails(e);                                // This puts it into the form on the 'entry' page
 });
@@ -95,14 +99,6 @@ var Entry = function(name, mobile, email, gender) {
     this.gender = gender;
 }
 
-/**
- * Get the display name of an Entry object.  e.g. if the entry is for "John Smith", this will
- * return "Smith, John", which simplifies organising the entries alphabetically...
- * @returns {string}
- */
-Entry.prototype.displayName = function() {
-    return this.name;
-}
 
 /**
  * This tells us (true/false) if today is this entry's birthday.
@@ -161,7 +157,7 @@ function addEntry(name, mobile, home, email, gender) {
 function removeEntry(name){
     var pos = -1, index, entry = null;
     for(index = 0; index < entries.length; index += 1){
-        if(name === entries[index].displayName()) {
+        if(name === entries[index].name) {
             pos = index;
             break;
         }
@@ -179,10 +175,10 @@ function removeEntry(name){
  */
 function sortEntries() {
     entries.sort(function(a, b) {
-        if(a.displayName() < b.displayName()){
+        if(a.name < b.name){
             return -1;
         }
-        if(a.displayName() > b.displayName()) {
+        if(a.name > b.name) {
             return 1;
         }
         return 0;
@@ -200,11 +196,11 @@ function sortEntries() {
 function entryList(){
     var index, list = "";
     for(index = 0; index < entries.length; index += 1){
-        list += `<li>
+	list += `<li>
                         <a href="#contactDetails" >
                             <img src="contact.jpg" style="background-color:transparent; border-radius: 50%; padding-left: 10px; padding-top: 3px; height: 90%;" >
                             <h1>
-                                ${entries[index].displayName()}
+                                ${entries[index].name}
                             </h1>
                             <p> ${entries[index].email} </p>
                         </a>
@@ -212,7 +208,7 @@ function entryList(){
                         </a>
                     </li>
 		`
-    }
+	}
     return list;
 }
 
@@ -236,7 +232,7 @@ function displayEntryList(listElement){
 function getEntryFromDisplayName(displayName){
     var index, e;
     for(index = 0; index < entries.length; index += 1){
-        if(entries[index].displayName() === displayName){
+        if(entries[index].name === displayName){
             return entries[index];
         }
     }
@@ -262,8 +258,9 @@ function displayEntry(e){
 }
 
 function displayEntryDetails(e)
-{
-    $("#contactName").val(e.name);
+{	
+	
+	$("#contactName").html(""+e.name );	
 }
 
 /**

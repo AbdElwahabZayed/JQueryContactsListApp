@@ -17,7 +17,7 @@
                 <h1>
                     Contacts List
                 </h1>
-                <a href="#addContact" class="ui-btn ui-btn-right ui-btn-icon-right ui-icon-plus" style="border-radius:15px; background-color:White;"> New </a>
+                <a href="#addContact" class="ui-btn ui-btn-right ui-btn-icon-right ui-icon-plus" id="add" style="border-radius:15px; background-color:White;"> New </a>
             </header>
             <div class="ui-content" data-role="content">
                 <ul id="list" data-role="listview" data-filter="true" data-autodividers="true" data-filter-placeholder="Search contacts">
@@ -37,9 +37,9 @@
                 </h1>
             </div>
             <div class="ui-content">
-                <label for="fullname">Name<input type="text" name="text-basic" id="fullname" value=""></label>
-                <label for="mobile">Phone<input type="number" name="text-basic" id="mobile" value=""></label>
-                <label for="email">Email<input type="email" name="text-basic" id="email" value=""></label>
+                <label for="fullname">Name</label><input type="text"  id="fullname"/>
+                <label for="mobile">Phone</label><input type="number"  id="mobile" />
+                <label for="email">Email</label><input type="email" id="email" />
 
                 <li class="ui-field-contain" >
                     <label for="gender">Gender</label>
