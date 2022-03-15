@@ -147,6 +147,7 @@ function addNewContact() {
     var name = $("#fullname").val(),
         mobile = $("#mobile").val(),
         email = $("#email").val(),
+		gender = $("#gender").val();
     if (name !== "") {
         return addContact(name, mobile, email, gender);
     } else {
