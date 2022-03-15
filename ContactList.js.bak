@@ -123,8 +123,7 @@ function displayContact(e) {
     $("#fullname").val(e.name);
     $("#mobile").val(e.mobile);
     $("#email").val(e.email);
-    $("#gender").val(e.gender);
-    $("#email").val(e.email);	
+	
     $("#gender").val(e.gender).change();
     $("#name").text(e.name);
 }
@@ -139,7 +138,6 @@ function updateContact() {
     e.name = $("#fullname").val();
     e.mobile = $("#mobile").val();
     e.email = $("#email").val();
-    e.gender = $("#flip2").val();
     e.gender = $("#gender").val();
 }
 
@@ -147,6 +145,7 @@ function addNewContact() {
     var name = $("#fullname").val(),
         mobile = $("#mobile").val(),
         email = $("#email").val(),
+        gender = $("#gender").val();
     if (name !== "") {
         return addContact(name, mobile, email, gender);
     } else {
