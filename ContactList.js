@@ -37,7 +37,7 @@ $(document).ready(function() {
 
 
     // 2. The "Del" button, for deleting an entry...
-    $("#del").click(function() {
+    $("#delete").click(function() {
         if(currentEntry !== ""){
             removeEntry(currentEntry);
             currentEntry = "";
@@ -70,11 +70,12 @@ $(document).ready(function() {
 
 // This selector applies to all <a> elements inside the <ul> with the id "list".
 // $(this) is a jQuery object referencing the actual <a> element that was clicked on.
-$(document).on('click', "#list h1", function() {
-
-    currentEntry =  $(this).text();                // The text in the <a> element, which is an Entry's displayName()
-    var e = getEntryFromDisplayName(currentEntry);  // This get a reference to the actual Entry
-    displayEntryDetails(e);                                // This puts it into the form on the 'entry' page
+$(document).on('click', "#list li", function() {
+	
+    currentEntry = entries[$(this).index()].name;                // The text in the <a> element, which is an Entry's displayName()
+    //console.log("fffffffffffffffff"+currentEntry);
+	//var e = getEntryFromDisplayName(currentEntry);  // This get a reference to the actual Entry
+    displayEntryDetails(entries[$(this).index()]);                                                           // This puts it into the form on the 'entry' page
 });
 
 // This gets call when the app is first loaded...
@@ -199,9 +200,7 @@ function entryList(){
 	list += `<li>
                         <a href="#contactDetails" >
                             <img src="contact.jpg" style="background-color:transparent; border-radius: 50%; padding-left: 10px; padding-top: 3px; height: 90%;" >
-                            <h1>
-                                ${entries[index].name}
-                            </h1>
+                            <h1>${entries[index].name}</h1>
                             <p> ${entries[index].email} </p>
                         </a>
                         <a href="tel:${entries[index].mobile}" class="ui-icon-phone" style="background-color: #43d1af; width: 75px; border-top-left-radius:25%; border-bottom-left-radius: 25%;">
@@ -282,7 +281,6 @@ function updateEntry(){
 function addNewEntry(){
     var name = $("#fullname").val(),
         mobile = $("#mobile").val(),
-        home = $("#home").val(),
         email = $("#email").val(),
         gender = $("#flip2").val();
     if(name !== "") {
