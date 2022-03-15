@@ -76,7 +76,7 @@ function init(){
  * @param mobile - their mobile number
  * @param home - their home number
  * @param email - their email address
- * @param dob - their date of birth (in string format)
+ * @param gender - their date of birth (in string format)
  * @constructor
  */
 var Entry = function(name, mobile, email, gender) {
@@ -103,7 +103,7 @@ Entry.prototype.displayName = function() {
  * @returns {boolean}
  */
 Entry.prototype.isBirthday = function() {
-    var bday = this.dob;
+    var bday = this.gender;
     bday.fullYear = new Date().fullYear;
     if(bday.getDate() === new Date().getDate()) {
         return true;
@@ -136,11 +136,11 @@ var entries = [];		// Start with a simple array
  * @param mobile
  * @param home
  * @param email
- * @param dob
+ * @param gender
  * @returns {Entry}
  */
-function addEntry(name, mobile, home, email, dob) {
-    var e = new Entry(name, mobile, home, email, dob);
+function addEntry(name, mobile, home, email, gender) {
+    var e = new Entry(name, mobile, home, email, gender);
     entries.push(e);
     sortEntries();
     return e;
@@ -194,7 +194,18 @@ function sortEntries() {
 function entryList(){
     var index, list = "";
     for(index = 0; index < entries.length; index += 1){
-        list += "<li><a href='#entry'>" + entries[index].displayName() + "</a></li>"; // name='item'
+        list += `<li>
+                        <a href="#contactDetails" >
+                            <img src="contact.jpg" style="background-color:transparent; border-radius: 50%; padding-left: 10px; padding-top: 3px; height: 90%;" >
+                            <h1>
+                                
+                            </h1>
+                            <p> </p>
+                        </a>
+                        <a href="tel:01100792555" class="ui-icon-phone" style="background-color: #43d1af; width: 75px; border-top-left-radius:25%; border-bottom-left-radius: 25%;">
+                        </a>
+                    </li>
+		`
     }
     return list;
 }
@@ -236,14 +247,12 @@ function displayEntry(e){
     $("#mobilebutton").attr("href", "tel:"+ e.mobile);
     $("#email").val(e.email);
     $("#mailbutton").attr("href", "mailto:"+ e.email);
-    $("#home").val(e.home);
-    $("#homebutton").attr("href", "tel:"+ e.home);
     // This is a bit of a beast, to do with the way the HTML <input> date type
     // expects dates to be formatted.  We want the date only (yyyy-mm-dd) and
-    // that dob is a full ISO date.  .toISOString() returns yyyy-mm-mm hh:mm or
+    // that gender is a full ISO date.  .toISOString() returns yyyy-mm-mm hh:mm or
     // something like that.  We therefore need to extract the first 10 characters
     // from the ISO date string...
-    $("#bday").val(e.dob.toISOString().substring(0, 10));
+    $("#flip2").val(e.gender);
     $("#name").text(e.name);
 }
 
@@ -255,9 +264,8 @@ function updateEntry(){
     var e = getEntryFromDisplayName(currentEntry);
     e.name = $("#fullname").val();
     e.mobile = $("#mobile").val();
-    e.home = $("#home").val();
     e.email = $("#email").val();
-    e.dob = $("#bday").val();
+    e.gender = $("#flip2").val();
 }
 
 /**
@@ -269,9 +277,9 @@ function addNewEntry(){
         mobile = $("#mobile").val(),
         home = $("#home").val(),
         email = $("#email").val(),
-        dob = $("#bday").val();
+        gender = $("#flip2").val();
     if(name !== "") {
-        return addEntry(name, mobile, home, email, dob);
+        return addEntry(name, mobile, home, email, gender);
     } else {
         return null;
     }
@@ -296,7 +304,7 @@ function loadList(){
         var proto = new Entry();
         for(e in entries){
             entries[e].__proto__ = proto;
-            entries[e].dob = new Date(entries[e].dob);
+            //entries[e].gender = new Date(entries[e].gender);///should be loaded
         }
     } else {
         entries = [];
