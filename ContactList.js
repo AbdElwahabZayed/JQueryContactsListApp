@@ -1,170 +1,125 @@
-/**
- * Created with JetBrains WebStorm.
- * User: alistair
- * Date: 26/07/2013
- * Time: 19:56
- * To change this template use File | Settings | File Templates.
- */
-
-/**
- * This stores the displayName part of the current entry so that when we move from
- * the list page to the entry page, we keep track of which entry to display...
- * @type {string}
- */
-var currentEntry = "";
-
-/**
- * Here is the standard $(document).ready() call-back.  This is essentially the 'initialize' function
- * since it is called only when the entire DOM document has been loaded into the browser.
- * This is a very good place to set up things like event handlers for user interactions, since we
- * have a guarantee that the object the event handlers refer to are part of the DOM now.
- */
-$(document).ready(function() {
-    // Run the start-up routine, which, in this case, loads the current list of entries from
-    // local storage and displays them on the main (list) page...
+var selectedContact = "";
+$(document).ready(function () {
     init();
+    $("#add").click(function () {
+        selectedContact = "";
+        var e = new Contact();    // An empty one.
+        displayContact(e);
+        $("#addContactHeader").text("New Contact");
+        $("#update").text("Save");
+    });
 
-    // Now install the event handlers for buttons the user can click or tap on.
-    // 1. The "Add" button (for adding a new entry)...
-    $("#add").click(function() {
-        currentEntry = "";
-        var e = new Entry();    // An empty one.
-        displayEntry(e);
-		$("#addContactHeader").text("New Contact");
-		$("#update").text("save");
-    });    
-	
-
-
-    // 2. The "Del" button, for deleting an entry...
-    $("#delete").click(function() {
-        if(currentEntry !== ""){
-            removeEntry(currentEntry);
-            currentEntry = "";
-            displayEntryList("#list");
+    $("#delete").click(function () {
+        if (selectedContact !== "") {
+            removeContact(selectedContact);
+            selectedContact = "";
+            displayContactList("#list");
             saveList();
         }
     });
 
-    $("#edit").click(function(){
-		$("#addContactHeader").text("Edit Contact");
-		$("#update").text("update");
-        //	currentEntry = $(this).text();                  // The text in the <a> element, which is an Entry's displayName()
-        var e = getEntryFromDisplayName(currentEntry);
-        displayEntry(e);
+    $("#edit").click(function () {
+        $("#addContactHeader").text("Edit Contact");
+        $("#update").text("Update");
+        var e = getContactFromDisplayName(selectedContact);
+        displayContact(e);
     })
-
-    // 3. The "Update" button, for updating an entry's details...
-    $("#update").click(function() {
-        if(currentEntry === ""){
-            addNewEntry();
+    $("#update").click(function () {
+        if (selectedContact === "") {
+            addNewContact();
         } else {
-            updateEntry();
+            updateContact();
         }
-        displayEntryList("#list");
-        // Whenever anything is changed, save the whole list...
+        displayContactList("#list");
         saveList();
     });
 
 });
-
-// This selector applies to all <a> elements inside the <ul> with the id "list".
-// $(this) is a jQuery object referencing the actual <a> element that was clicked on.
-$(document).on('click', "#list li", function() {
-	
-    currentEntry = entries[$(this).index()].name;                // The text in the <a> element, which is an Entry's displayName()
-    //console.log("fffffffffffffffff"+currentEntry);
-	//var e = getEntryFromDisplayName(currentEntry);  // This get a reference to the actual Entry
-    displayEntryDetails(entries[$(this).index()]);                                                           // This puts it into the form on the 'entry' page
+$(document).on('click', "#list li", function () {
+    selectedContact = contacts[$(this).index()].name;
+    displayContactDetails(contacts[$(this).index()]);
 });
 
-// This gets call when the app is first loaded...
-function init(){
+function init() {
     loadList();
-    displayEntryList("#list");
+    displayContactList("#list");
 }
 
-/**
- * This lets us make a new entry object.
- * @param name - the person's name
- * @param mobile - their mobile number
- * @param home - their home number
- * @param email - their email address
- * @param gender - their date of birth (in string format)
- * @constructor
- */
-var Entry = function(name, mobile, email, gender) {
+var Contact = function (name, mobile, email, gender) {
     this.name = name;
     this.mobile = mobile;
     this.email = email;
     this.gender = gender;
 }
-var entries = [];		// Start with a simple array
+var contacts = [];		// Start with a simple array
 
-function addEntry(name, mobile, email, gender) {
-    var e = new Entry(name, mobile, email, gender);
-    entries.push(e);
+function addContact(name, mobile, email, gender) {
+    var e = new Contact(name, mobile, email, gender);
+    contacts.push(e);
     sortEntries();
     return e;
 }
-function removeEntry(name){
-    var pos = -1, index, entry = null;
-    for(index = 0; index < entries.length; index += 1){
-        if(name === entries[index].name) {
+
+function removeContact(name) {
+    var pos = -1, index, contact = null;
+    for (index = 0; index < contacts.length; index += 1) {
+        if (name === contacts[index].name) {
             pos = index;
             break;
         }
     }
-    if(pos > -1) {
-        entry = entries[pos];
-        entries.splice(pos, 1);
+    if (pos > -1) {
+        contact = contacts[pos];
+        contacts.splice(pos, 1);
     }
-    return entry;
+    return contact;
 }
+
 function sortEntries() {
-    entries.sort(function(a, b) {
-        if(a.name < b.name){
+    contacts.sort(function (a, b) {
+        if (a.name < b.name) {
             return -1;
         }
-        if(a.name > b.name) {
+        if (a.name > b.name) {
             return 1;
         }
         return 0;
     });
-    return entries;
+    return contacts;
 }
-function entryList(){
+
+function contactList() {
     var index, list = "";
-    for(index = 0; index < entries.length; index += 1){
-	list += `<li>
-                        <a href="#contactDetails" >
-                            <img src="contact.jpg" style="background-color:transparent; border-radius: 50%; padding-left: 10px; padding-top: 3px; height: 90%;" >
-                            <h1>${entries[index].name}</h1>
-                            <p> ${entries[index].email} </p>
-                        </a>
-                        <a href="tel:${entries[index].mobile}" class="ui-icon-phone" style="background-color: #43d1af; width: 75px; border-top-left-radius:25%; border-bottom-left-radius: 25%;">
-                        </a>
-                    </li>
-		`
-	}
+    for (index = 0; index < contacts.length; index += 1) {
+        list += `<li>
+                <a href="#contactDetails" >
+                    <img src="contact.jpg" style="background-color:transparent; border-radius: 50%; padding-left: 10px; padding-top: 3px; height: 90%;" >
+                    <h1>${contacts[index].name}</h1>
+                    <p> ${contacts[index].email} </p>
+                </a>
+                <a href="tel:${contacts[index].mobile}" class="ui-icon-phone" style="background-color: #43d1af; width: 75px; border-top-left-radius:25%; border-bottom-left-radius: 25%;">
+                </a>
+             </li>`
+    }
     return list;
 }
-function displayEntryList(listElement){
-    $(listElement).html(entryList()).listview('refresh');
+
+function displayContactList(listElement) {
+    $(listElement).html(contactList()).listview('refresh');
     return $(listElement);
 }
 
-function getEntryFromDisplayName(displayName){
+function getContactFromDisplayName(displayName) {
     var index, e;
-    for(index = 0; index < entries.length; index += 1){
-        if(entries[index].name === displayName){
-            return entries[index];
+    for (index = 0; index < contacts.length; index += 1) {
+        if (contacts[index].name === displayName) {
+            return contacts[index];
         }
     }
     return null;
 }
 
-function displayEntry(e){
+function displayContact(e) {
     $("#fullname").val(e.name);
     $("#mobile").val(e.mobile);
     $("#email").val(e.email);
@@ -172,43 +127,46 @@ function displayEntry(e){
     $("#name").text(e.name);
 }
 
-function displayEntryDetails(e)
-{
-	$("#contactName").html(""+e.name );
-    $("#telephone").attr("href", "tel:"+ e.mobile);
+function displayContactDetails(e) {
+    $("#contactName").html("" + e.name);
+    $("#telephone").attr("href", "tel:" + e.mobile);
 }
-function updateEntry(){
-    var e = getEntryFromDisplayName(currentEntry);
+
+function updateContact() {
+    var e = getContactFromDisplayName(selectedContact);
     e.name = $("#fullname").val();
     e.mobile = $("#mobile").val();
     e.email = $("#email").val();
     e.gender = $("#flip2").val();
 }
-function addNewEntry(){
+
+function addNewContact() {
     var name = $("#fullname").val(),
         mobile = $("#mobile").val(),
         email = $("#email").val(),
         gender = $("#flip2").val();
-    if(name !== "") {
-        return addEntry(name, mobile, email, gender);
+    if (name !== "") {
+        return addContact(name, mobile, email, gender);
     } else {
         return null;
     }
 }
-function saveList(){
-    var strList = JSON.stringify(entries);
+
+function saveList() {
+    var strList = JSON.stringify(contacts);
     localStorage.phoneBook = strList;
 }
-function loadList(){
+
+function loadList() {
     var strList;
     strList = localStorage.phoneBook;
-    if(strList){
-        entries = JSON.parse(strList);
-        var proto = new Entry();
-        for(e in entries){
-            entries[e].__proto__ = proto;
+    if (strList) {
+        contacts = JSON.parse(strList);
+        var proto = new Contact();
+        for (e in contacts) {
+            contacts[e].__proto__ = proto;
         }
     } else {
-        entries = [];
+        contacts = [];
     }
 }
